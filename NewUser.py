@@ -111,8 +111,13 @@ canvas.pack(pady = 10)
 
 photo = None
 sampleNum = 0
+clicked = 0
+def getClicked():
+    return clicked
 def updateFrame():
+    global clicked, sampleNum
     global canvas, photo
+    global txt_id, txt_username
 
     # Đọc từ Camera
     ret, img = camera.read()
@@ -126,9 +131,13 @@ def updateFrame():
     for (x, y, w, h) in faces:
         # Vẽ hình chữ nhật quanh mặt nhận được
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-    #     sampleNum = sampleNum + 1
-    #     # Ghi dữ liệu khuôn mặt vào thư mục dataSet
-    #     cv2.imwrite("dataSet/" + name +'.' + txt_id.get() + '.' + str(sampleNum) + ".jpg", gray[y:y + h, x:x + w])
+        if(clicked>0):
+            # Ghi dữ liệu khuôn mặt vào thư mục dataSet
+                cv2.imwrite("dataSet/" + name +'.' + txt_id.get() + '.' + str(sampleNum) + ".jpg", gray[y:y + h, x:x + w])
+                sampleNum = sampleNum + 1
+                if (sampleNum>10): 
+                    clicked=0
+                    sampleNum=0
 
     photo = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(gray))
     canvas.create_image(0, 0, image=photo, anchor=tkinter.NW)
@@ -156,13 +165,15 @@ txt_id = Entry(frame_info,font=("times new roman",15),bg="light gray")
 txt_id.place(x=30,y=190,width=250,height=30)
 
 def startBtn():
+    global clicked, txt_id, txt_username
     ID = txt_id.get()
     name = txt_username.get()
     print(name)
     print(ID)
     InsertOrUpdate(ID,name)
     print('Bắt đầu chụp ảnh hồ sơ, nhấn Q để thoát...')
-
+    clicked= clicked + 1
+    print('clicked in startbtn=',clicked)
 
 
 start_btn = Button(window,text="Start",font=("times new roman",13),fg="white",bg="#d77337",command=startBtn).place(x=225,y=538)
