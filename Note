@@ -1,0 +1,3 @@
+Quang chạy đc cái FaceRecognizer rồi
+
+Trong cái file FaceRecognizer.py nếu mà ko phải người trong db thì nó sẽ làm thay đổi nội dung của txt_username
